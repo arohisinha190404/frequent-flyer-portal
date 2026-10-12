@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SkyMiles Frequent Flyer Portal for member management, flight bookings and rewards.">
+    <title>SkyMiles | Frequent Flyer Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="#dashboard" aria-label="SkyMiles home">
+        <span class="logo" aria-hidden="true">✈</span>
+        <span><strong>SkyMiles</strong><small>Frequent Flyer Portal</small></span>
+    </a>
+    <div class="user-info">
+        <span aria-hidden="true">●</span>
+        <div><strong>Floor Staff</strong><small>Portal User</small></div>
+    </div>
+</header>
+
+<div class="layout">
+    <aside class="sidebar" aria-label="Main navigation">
+        <nav>
+            <a class="nav-link active" href="#dashboard">⌂ Dashboard</a>
+            <a class="nav-link" href="#member-search">⌕ Member Search</a>
+            <a class="nav-link" href="#enroll">＋ Enroll Member</a>
+            <a class="nav-link" href="#bookings">✈ Flight Bookings</a>
+            <a class="nav-link" href="#rewards">☆ Miles & Rewards</a>
+            <a class="nav-link" href="#activity">▣ Transactions</a>
+        </nav>
+        <p class="online"><span></span> System Online</p>
+    </aside>
+
+    <main id="dashboard">
+        <section class="hero">
+            <h1>Welcome to SkyMiles</h1>
+            <h2>End-to-End Frequent Flyer Portal</h2>
+            <p>Search members, manage accounts, book flights and track rewards.</p>
+            <form id="hero-search" class="search-bar" novalidate>
+                <label class="sr-only" for="global-query">Search members</label>
+                <input id="global-query" type="search"
+                       placeholder="Search by Member ID, Name, or Email"
+                       aria-label="Search by member ID, name, or email">
+                <button type="submit">Search</button>
+            </form>
+            <p id="global-error" class="error" role="alert"></p>
+        </section>
+
+        <section class="stats" aria-label="Portal statistics">
+            <article class="stat-card">
+                <span class="stat-icon">♙</span>
+                <div><p>Total Members</p><h3 id="total-members">0</h3></div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon">✈</span>
+                <div><p>Total Flights Booked</p><h3 id="total-flights">0</h3></div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon">☆</span>
+                <div><p>Total Miles Issued</p><h3 id="total-miles">0</h3></div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon">♧</span>
+                <div><p>Active Rewards</p><h3 id="active-rewards">0</h3></div>
+            </article>
+        </section>
+
+        <div class="content-grid">
+            <div class="main-column">
+                <section class="panel" id="member-search">
+                    <div class="section-heading">
+                        <h2>Member Lookup</h2>
+                    </div>
+                    <form id="member-search-form" class="search-bar light" novalidate>
+                        <label class="sr-only" for="member-query">Member ID or email</label>
+                        <input id="member-query" type="search"
+                               placeholder="Enter Member ID, Name, or Email"
+                               aria-label="Enter member ID, name, or email">
+                        <button type="submit">Search</button>
+                    </form>
+                    <p id="search-error" class="error" role="alert"></p>
+                    <div id="member-results" aria-live="polite">
+                        <p class="empty-state">Search for a member to see their details.</p>
+                    </div>
+                </section>
+
+                <section class="panel" id="enroll">
+                    <h2>Enroll New Member</h2>
+                    <form id="enroll-form" class="form-grid" novalidate>
+                        <div class="field">
+                            <label for="member-name">Full Name</label>
+                            <input id="member-name" name="name" required
+                                   maxlength="80" autocomplete="name">
+                            <small class="field-error" id="name-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="member-email">Email Address</label>
+                            <input id="member-email" name="email" type="email"
+                                   required maxlength="120" autocomplete="email">
+                            <small class="field-error" id="email-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="member-phone">Phone Number</label>
+                            <input id="member-phone" name="phone" type="tel"
+                                   required inputmode="numeric" maxlength="10"
+                                   placeholder="10-digit mobile number">
+                            <small class="field-error" id="phone-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="initial-miles">Starting Miles</label>
+                            <input id="initial-miles" name="miles" type="number"
+                                   min="0" max="1000000" value="0" required>
+                            <small class="field-error" id="miles-error"></small>
+                        </div>
+                        <button type="submit" class="primary full">Enroll Member</button>
+                    </form>
+                    <p id="enroll-message" role="status" aria-live="polite"></p>
+                </section>
+
+                <section class="panel" id="bookings">
+                    <div class="section-heading">
+                        <h2>Recent Flight Bookings</h2>
+                        <button type="button" id="view-all" class="text-button">
+                            View All →
+                        </button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Flight No.</th>
+                                    <th>Route</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="booking-list"></tbody>
+                        </table>
+                    </div>
+                    <p id="booking-empty" class="empty-state" hidden>No data found.</p>
+                </section>
+
+                <section class="panel" id="new-booking">
+                    <h2>Book a Flight</h2>
+                    <form id="booking-form" class="form-grid" novalidate>
+                        <div class="field">
+                            <label for="booking-member">Member</label>
+                            <select id="booking-member" required>
+                                <option value="">Select a member</option>
+                            </select>
+                            <small class="field-error" id="booking-member-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="flight-number">Flight Number</label>
+                            <input id="flight-number" required maxlength="10"
+                                   placeholder="e.g. AI101">
+                            <small class="field-error" id="flight-number-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="flight-from">From (airport code)</label>
+                            <input id="flight-from" required maxlength="3"
+                                   placeholder="DEL">
+                            <small class="field-error" id="flight-from-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="flight-to">To (airport code)</label>
+                            <input id="flight-to" required maxlength="3"
+                                   placeholder="BOM">
+                            <small class="field-error" id="flight-to-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="flight-date">Flight Date</label>
+                            <input id="flight-date" type="date" required>
+                            <small class="field-error" id="flight-date-error"></small>
+                        </div>
+                        <button type="submit" class="primary full">Confirm Booking</button>
+                    </form>
+                    <p id="booking-message" role="status" aria-live="polite"></p>
+                </section>
+
+                <section class="panel" id="rewards">
+                    <h2>Miles & Rewards</h2>
+                    <form id="reward-form" class="form-grid" novalidate>
+                        <div class="field">
+                            <label for="reward-member">Member</label>
+                            <select id="reward-member" required>
+                                <option value="">Select a member</option>
+                            </select>
+                            <small class="field-error" id="reward-member-error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="reward-miles">Miles to Redeem</label>
+                            <input id="reward-miles" type="number" min="1"
+                                   max="1000000" required>
+                            <small class="field-error" id="reward-miles-error"></small>
+                        </div>
+                        <button type="submit" class="primary full">Redeem Miles</button>
+                    </form>
+                    <p id="reward-message" role="status" aria-live="polite"></p>
+                </section>
+            </div>
+
+            <aside class="right-column">
+                <section class="member-card">
+                    <p>Frequent Flyer Member</p>
+                    <h2 id="card-name">Select a member</h2>
+                    <p id="card-id">Member ID: —</p>
+                    <span class="tier">Silver</span>
+                    <hr>
+                    <p>Miles Balance</p>
+                    <h2 id="card-miles">0</h2>
+                </section>
+
+                <section class="panel">
+                    <h2>Quick Actions</h2>
+                    <a class="quick-link" href="#enroll">＋ Enroll New Member</a>
+                    <a class="quick-link" href="#new-booking">✈ Book a Flight</a>
+                    <a class="quick-link" href="#rewards">☆ Redeem Miles</a>
+                    <a class="quick-link" href="#activity">▤ View Transactions</a>
+                </section>
+
+                <section class="panel" id="activity">
+                    <h2>Recent Activity</h2>
+                    <ul id="activity-list" class="activity-list"></ul>
+                    <p id="activity-empty" class="empty-state" hidden>No data found.</p>
+                </section>
+            </aside>
+        </div>
+
+        <footer>
+            <span>ⓘ Need help? Contact your portal administrator.</span>
+            <span>SkyMiles Demo Portal</span>
+        </footer>
+        <div id="toast" role="status" aria-live="polite"></div>
+    </main>
+</div>
+</body>
+</html>
